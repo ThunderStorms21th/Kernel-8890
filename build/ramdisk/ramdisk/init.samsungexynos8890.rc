@@ -1102,9 +1102,3 @@ service apexserver /system/bin/apexserver
 	user system
 	group system graphics media media_rw
 	disabled
-
-# irisd
-service irisd /system/bin/irisd
-    class late_start
-    user system
-    group system
