@@ -44,12 +44,6 @@ on init
 
     ffu
 
-# [ SEC_SELINUX_PORTING_COMMON
-    # for audit message
-    chown system system /proc/avc_msg
-    chmod 0660 /proc/avc_msg
-# ] SEC_SELINUX_PORTING_COMMON
-
     # Mix device-specific information into the entropy pool
     copy /proc/cmdline /dev/urandom
     copy /default.prop /dev/urandom
@@ -673,27 +667,11 @@ on post-fs-data
     write /data/misc/conn/.wificable.info E
     chown system root /data/misc/conn/.wificable.info
     chmod 0666 /data/misc/conn/.wificable.info
-    
-# [ SEC_PRODUCT_FEATURE_SECURITY_SUPPORT_FIVE
-    mkdir /data/misc/integrity 0775 vendor_audit system
-# ] SEC_PRODUCT_FEATURE_SECURITY_SUPPORT_FIVE
-	
-# [ SEC_SELINUX_PORTING_COMMON
-    mkdir /data/misc/audit 0775 system system
-    chown vendor_audit vendor_audit /data/misc/audit/audit.log
-    chown vendor_audit vendor_audit /data/misc/audit/audit.old
 
+# [ SEC_SELINUX_PORTING_COMMON
     # arcounter
     mkdir /data/misc/arcounter 0700 system system
-
-    # start auditd
-    start auditd
 # ] SEC_SELINUX_PORTING_COMMON
-
-# [ SEC_AASA_ASKS_PORTING
-    # Seperate location for storing security policy files on data
-    mkdir /data/security 0701 system system
-# ] SEC_AASA_ASKS_PORTING
 
     mkdir /data/vendor 0771 root root
     mkdir /data/vendor_ce 0771 root root
@@ -1826,12 +1804,6 @@ service flash_recovery /system/bin/install-recovery.sh
     oneshot
 
 # [ SEC_SELINUX_PORTING_COMMON
-service auditd /system/bin/auditd -k
-    class main
-    seclabel u:r:auditd:s0
-    disabled
-    oneshot
-
 on property:sys.seandroid.restoreapp=start
     restore_appdata    
 # ] SEC_SELINUX_PORTING_COMMON
@@ -1967,22 +1939,6 @@ service defrag_service /system/bin/idledefrag
 
 on property:vold.should_defrag=1
     start defrag_service
-
-## SecProductFeature_KNOX.SEC_PRODUCT_FEATURE_KNOX_SUPPORT_MDM{
-## EDM AuditLog
-service edmaudit /system/bin/edmaudit
-    class main
-    user system
-    group system
-    capabilities SYSLOG
-    disabled
-
-on property:security.edmaudit=true
-    start edmaudit
-
-on property:security.edmaudit=false
-    stop edmaudit
-## } SecProductFeature_KNOX.SEC_PRODUCT_FEATURE_KNOX_SUPPORT_MDM
 
 # knox_changer service
 # UCM ODE mode
